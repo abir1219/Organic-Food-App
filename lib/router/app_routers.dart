@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:organic_food_new/screens/cart_screen.dart';
 import 'package:organic_food_new/screens/login_screen.dart';
+import 'package:organic_food_new/screens/order_details_screen.dart';
+import 'package:organic_food_new/screens/order_list_screen.dart';
 import 'package:organic_food_new/screens/order_summery_screen.dart';
 import 'package:organic_food_new/screens/product_page.dart';
 import 'package:organic_food_new/screens/shipping_address_screen.dart';
@@ -89,5 +91,31 @@ class AppRouters {
               },
             ),
             name: "orderSummeryPage"),
+        GoRoute(
+            path: AppPages.ORDER_DETAILS_PAGE,
+            builder: (context, state) => const OrderDetailsScreen(),
+            pageBuilder: (context, state) => CustomTransitionPage(
+              child: const OrderDetailsScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+            ),
+            name: "orderDetailsPage"),
+        GoRoute(
+            path: AppPages.ORDER_LIST_PAGE,
+            builder: (context, state) => const OrderListScreen(),
+            pageBuilder: (context, state) => CustomTransitionPage(
+              child: const OrderListScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+            ),
+            name: "orderListPage"),
   ]);
 }

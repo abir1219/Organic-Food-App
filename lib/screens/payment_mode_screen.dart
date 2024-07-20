@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:organic_food_new/router/app_pages.dart';
 
 import '../utils/app_colors.dart';
 import '../widgets/app_widgets.dart';
@@ -62,6 +64,13 @@ class _PaymentModeScreenState extends State<PaymentModeScreen> {
                           showDialog(
                             context: context,
                             builder: (context) {
+                              Future.delayed(
+                                const Duration(seconds: 3),
+                                    () {
+                                  Navigator.of(context).pop(true); // Close the dialog
+                                  context.go(AppPages.ORDER_DETAILS_PAGE);
+                                },
+                              );
                               return Dialog(
                                 child: Container(
                                   height: size.height * 0.3,
@@ -90,6 +99,10 @@ class _PaymentModeScreenState extends State<PaymentModeScreen> {
                               );
                             },
                           );
+                          // Future.delayed(const Duration(seconds: 3),() {
+                          //   Navigator.pop(context); // Close the dialog
+                          //   context.go(AppPages.ORDER_DETAILS_PAGE);
+                          // },);
                         }
                       },
                     ),
