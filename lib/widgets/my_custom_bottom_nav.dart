@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
 import 'package:organic_food_new/router/app_pages.dart';
 import 'package:organic_food_new/utils/app_colors.dart';
 
@@ -52,13 +52,13 @@ class _State extends State<MyCustomBottomNav> {
             onTap: (index) {
               debugPrint("index--->$index");
               if(index == 0) {
-                context.go(AppPages.PRODUCT_PAGE);
+                Get.offNamed(AppPages.PRODUCT_PAGE);
               }else if(index == 1) {
-                context.go(AppPages.CART_PAGE);
+                Get.offNamed(AppPages.CART_PAGE);
               }else if(index == 2) {
-                context.go(AppPages.PRODUCT_PAGE);
+                Get.offNamed(AppPages.ORDER_LIST_PAGE);
               }else if(index == 3) {
-                context.go(AppPages.PRODUCT_PAGE);
+                Get.offNamed(AppPages.PRODUCT_PAGE);
               }
               setState(() {
                 _currentIndex = index;

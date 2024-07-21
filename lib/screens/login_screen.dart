@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
+import 'package:organic_food_new/controllers/login_controller.dart';
 import 'package:organic_food_new/utils/app_colors.dart';
 
-import '../router/app_pages.dart';
 import '../widgets/app_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,10 +17,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-
     var size = MediaQuery.sizeOf(context);
-    final userIdController = TextEditingController();
-    final passwordController = TextEditingController();
+    final TextEditingController? _emailController = TextEditingController();
+    final TextEditingController? _passwordController = TextEditingController();
+
+    var controller = Get.find<LoginController>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -59,12 +60,16 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildField(size: size, hint: 'User id', controller: userIdController, icon:const Icon(Icons.person), obscureText: false),
-                _buildField(size: size, hint: 'Password', controller: passwordController, icon:const Icon(Icons.visibility), obscureText: true),
+                _buildField(size: size, hint: 'User id', controller: _emailController!, icon:const Icon(Icons.person), obscureText: false, keyboardType: TextInputType.emailAddress),
+                _buildField(size: size, hint: 'Password', controller: _passwordController!, icon:const Icon(Icons.visibility), obscureText: true, keyboardType: TextInputType.text),
                 Gap(size.height * 0.02),
-                AppWidgets.customButton(size: size, btnName: 'Login', color: AppColors.LOGO_BACKGROUND_COLOR, func: () {
-                  context.go(AppPages.PRODUCT_PAGE);
-                })
+                Obx(() => AppWidgets.customButton(
+                    isLoading: controller.isLoading.value,
+                    size: size, btnName: 'Login', color: AppColors.LOGO_BACKGROUND_COLOR, func: () {
+                    //Get.offNamed(AppPages.PRODUCT_PAGE);
+                  controller.validateForm(_emailController, _passwordController);
+                  }),
+                )
               ],
             ),
           ),),)
@@ -73,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildField({required Size size,required String hint,required TextEditingController controller,required Icon icon,required bool obscureText}) {
+  Widget _buildField({required Size size,required String hint,required TextEditingController controller,required Icon icon,required bool obscureText,required TextInputType keyboardType}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: size.height * .005),
       padding: EdgeInsets.symmetric(horizontal: size.height * .008), //,vertical: 2
@@ -86,6 +91,8 @@ class _LoginScreenState extends State<LoginScreen> {
           )),
       child: TextField(
         obscureText: obscureText,
+        controller: controller,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
             icon: icon,
             hintText: hint,

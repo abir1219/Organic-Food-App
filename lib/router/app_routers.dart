@@ -1,17 +1,47 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:organic_food_new/screens/cart_screen.dart';
-import 'package:organic_food_new/screens/login_screen.dart';
-import 'package:organic_food_new/screens/order_details_screen.dart';
-import 'package:organic_food_new/screens/order_list_screen.dart';
-import 'package:organic_food_new/screens/order_summery_screen.dart';
-import 'package:organic_food_new/screens/product_page.dart';
-import 'package:organic_food_new/screens/shipping_address_screen.dart';
-import 'package:organic_food_new/screens/splash_screen.dart';
+import 'package:get/get.dart';
 import 'app_pages.dart';
+import 'views.dart';
 
 class AppRouters {
-  static GoRouter routers =
+
+  static final List<GetPage> pages =[
+    GetPage(
+      name: AppPages.SPLASH_SCREEN,
+      page: () =>const SplashScreen(),
+    ),
+    GetPage(
+      name: AppPages.LOGIN_PAGE,
+      page: () =>const LoginScreen(),
+      binding: LoginBinding()
+    ),
+    GetPage(
+      name: AppPages.PRODUCT_PAGE,
+      page: () =>const ProductPage(),
+        binding: ProductBinding()
+    ),
+    GetPage(
+      name: AppPages.CART_PAGE,
+      page: () =>const CartScreen(),
+    ),
+    GetPage(
+      name: AppPages.SHIPPING_ADDRESS_PAGE,
+      page: () =>const ShippingAddressScreen(),
+    ),
+    GetPage(
+      name: AppPages.ORDER_SUMMARY_PAGE,
+      page: () =>const OrderSummaryScreen(),
+    ),
+    GetPage(
+      name: AppPages.ORDER_DETAILS_PAGE,
+      page: () =>const OrderDetailsScreen(),
+    ),
+    GetPage(
+      name: AppPages.ORDER_LIST_PAGE,
+      page: () =>const OrderListScreen(),
+    ),
+  ];
+
+      /*static GoRouter routers =
       GoRouter(initialLocation: AppPages.SPLASH_SCREEN, routes: [
     GoRoute(
         path: AppPages.SPLASH_SCREEN,
@@ -117,5 +147,5 @@ class AppRouters {
               },
             ),
             name: "orderListPage"),
-  ]);
+  ]);*/
 }

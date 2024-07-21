@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
 import 'package:organic_food_new/router/app_pages.dart';
 
 import '../utils/app_colors.dart';
@@ -68,7 +68,7 @@ class _PaymentModeScreenState extends State<PaymentModeScreen> {
                                 const Duration(seconds: 3),
                                     () {
                                   Navigator.of(context).pop(true); // Close the dialog
-                                  context.go(AppPages.ORDER_DETAILS_PAGE);
+                                  Get.offNamed(AppPages.ORDER_DETAILS_PAGE);
                                 },
                               );
                               return Dialog(
@@ -101,7 +101,7 @@ class _PaymentModeScreenState extends State<PaymentModeScreen> {
                           );
                           // Future.delayed(const Duration(seconds: 3),() {
                           //   Navigator.pop(context); // Close the dialog
-                          //   context.go(AppPages.ORDER_DETAILS_PAGE);
+                          //   Get.offNamed(AppPages.ORDER_DETAILS_PAGE);
                           // },);
                         }
                       },

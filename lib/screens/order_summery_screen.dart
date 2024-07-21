@@ -7,14 +7,14 @@ import 'package:organic_food_new/widgets/app_widgets.dart';
 
 import 'cart_product_list.dart';
 
-class OrderSummeryScreen extends StatefulWidget {
-  const OrderSummeryScreen({super.key});
+class OrderSummaryScreen extends StatefulWidget {
+  const OrderSummaryScreen({super.key});
 
   @override
-  State<OrderSummeryScreen> createState() => _OrderSummeryScreenState();
+  State<OrderSummaryScreen> createState() => _OrderSummaryScreenState();
 }
 
-class _OrderSummeryScreenState extends State<OrderSummeryScreen> {
+class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   List<String> productImage = [
     "assets/images/chicken.png",
     "assets/images/pea.png",

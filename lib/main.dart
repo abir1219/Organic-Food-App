@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:organic_food_new/debug/bloc_observer.dart';
+import 'package:get/get.dart';
+import 'package:organic_food_new/router/app_pages.dart';
 import 'package:organic_food_new/router/app_routers.dart';
 
+
+final navigatorKey = GlobalKey<NavigatorState>();
+
 void main() {
-  Bloc.observer = MyBlocObserver();
+  //Bloc.observer = MyBlocObserver();
   runApp(const MyApp());
 }
 
@@ -13,10 +16,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       title: 'Flutter Demo',
-      routerConfig: AppRouters.routers,
+      getPages: AppRouters.pages,
+      defaultTransition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+      initialRoute: AppPages.SPLASH_SCREEN,
       theme: ThemeData(
         fontFamily: "Montserrat",
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

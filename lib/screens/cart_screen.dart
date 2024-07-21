@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
 import 'package:organic_food_new/router/app_pages.dart';
 import 'package:organic_food_new/screens/cart_product_list.dart';
 import 'package:organic_food_new/utils/app_colors.dart';
@@ -134,7 +134,7 @@ class CartScreen extends StatelessWidget {
                         SizedBox(
                           width: size.width *0.4,
                           child: AppWidgets.customButton(size: size, btnName: "Place Order", color: AppColors.LOGO_BACKGROUND_COLOR, func: () {
-                            context.go(AppPages.SHIPPING_ADDRESS_PAGE);
+                            Get.offNamed(AppPages.SHIPPING_ADDRESS_PAGE);
                           },),
                         ),
                       ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
 import 'package:organic_food_new/router/app_pages.dart';
 import 'package:organic_food_new/widgets/app_widgets.dart';
 
@@ -93,7 +93,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: size.width * 0.04),
               child: AppWidgets.customButton(size: size, btnName: "DELIVER HERE", color: AppColors.LOGO_BACKGROUND_COLOR, func: () {
-                context.go(AppPages.ORDER_SUMMERY_PAGE);
+                Get.offNamed(AppPages.ORDER_SUMMARY_PAGE);
               },),
             ),
             Gap(size.height * 0.02),

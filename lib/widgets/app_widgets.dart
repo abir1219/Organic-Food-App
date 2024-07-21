@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class AppWidgets{
-
-  static Widget customButton({required Size size,required String btnName,required Color color,required void Function() func}){
+class AppWidgets {
+  static Widget customButton(
+      {bool isLoading = false,
+      required Size size,
+      required String btnName,
+      required Color color,
+      required void Function() func}) {
     return GestureDetector(
       onTap: () => func(),
       child: Container(
@@ -13,7 +18,13 @@ class AppWidgets{
           color: color,
         ),
         child: Center(
-          child: Text(btnName,style: const TextStyle(fontSize: 14,color: Colors.white),),
+          child: isLoading
+              ? LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.white, size: size.width * 0.08)
+              : Text(
+                  btnName,
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                ),
         ),
       ),
     );
