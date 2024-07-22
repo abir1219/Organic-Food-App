@@ -15,4 +15,11 @@ class CartRepository{
     dynamic response = _apiClient.putApi(url,body);
     return response;
   }
+
+  Future<dynamic> getAddressList(){
+    String url = ApiEndPoints.BASE_LINK + ApiEndPoints.authEndpoints.addresses;
+    dynamic response = _apiClient.getApi(url);
+    return response;
+  }
+
 }

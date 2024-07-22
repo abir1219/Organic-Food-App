@@ -59,7 +59,7 @@ class _CartProductListState extends State<CartProductList> {
                         ],
                       );
                     },
-                    itemCount: widget.controller.cartProducts.length,
+                    itemCount: widget.result.length,
                   )
                 : const Center(
                     child: Text(
