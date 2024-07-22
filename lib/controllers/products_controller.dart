@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:organic_food_new/models/location_model.dart';
+import 'package:organic_food_new/models/products_model.dart';
 import 'package:organic_food_new/repository/products_repository.dart';
+import 'package:organic_food_new/utils/app_constants.dart';
+import 'package:organic_food_new/utils/sharedpreference_utils.dart';
 import 'package:organic_food_new/utils/utils.dart';
 
 class ProductsController extends GetxController {
   final _repo = ProductsRepository();
   final Rx<LocationModel> _locationModel = LocationModel().obs;
+  final Rx<ProductsModel> productsModel = ProductsModel().obs;
+
+  final RxList<ProductResult> _products = <ProductResult>[].obs;
+
+  RxList<ProductResult> get products => _products;
 
   final RxList<LocationResult> _locations = <LocationResult>[].obs;
 
@@ -15,11 +24,28 @@ class ProductsController extends GetxController {
   RxList<LocationResult> findLocationResults = <LocationResult>[].obs;
   RxList<String>? cityNameList = <String>[].obs;
 
+  Rx<TextEditingController> locationController = TextEditingController().obs;
+  RxBool isClicked = false.obs;
+
+  RxString selectedLocationId = "".obs;
+  RxString selectedLocationName = "".obs;
+
   RxBool isLoading = false.obs;
   RxBool isCityLoading = false.obs;
 
+  RxList<int> quantity = <int>[].obs;
+
+  void selectLocationId(int index) {
+    selectedLocationId.value = findLocationResults[index].sId!;
+    selectedLocationName.value = findLocationResults[index].city!;
+    locationController.value.text = selectedLocationName.value;
+    isClicked.value = false;
+    getAllProducts(selectedLocationId.value);
+  }
+
   Future<void> getAllLocation() async {
     locations.clear();
+    // findLocationResults.clear();
     isCityLoading.value = true;
     // Utils.showSnackBarMessageWithLoader("Loading Schools...");
     // Utils.showToastMessage("Loading Schools...");
@@ -60,4 +86,65 @@ class ProductsController extends GetxController {
     }
     debugPrint("findCityResults--Length ===> ${findLocationResults.length}");
   }
+
+  void incrementQuantity(int index) {
+    if (quantity[index] < products[index].quantity!) {
+      quantity[index]++;
+    }
+  }
+
+  void decrementQuantity(int index) {
+    if (quantity[index] > 0) {
+      quantity[index]--;
+    }
+  }
+
+  Future<void> getAllProducts(String selectedLocationId) async {
+    _products.clear();
+    isLoading.value = true;
+    _repo.getAllProducts(selectedLocationId).then(
+      (value) {
+        if (value[1] == 200) {
+          productsModel.value = ProductsModel.fromJson(value[0]);
+          _products.assignAll(List<ProductResult>.generate(
+              productsModel.value.result!.length,
+              (index) => productsModel.value.result![index]));
+
+          quantity.assignAll(List<int>.generate(
+              productsModel.value.result!.length, (index) => 1));
+          isAddingCart.assignAll(List<bool>.generate(
+              productsModel.value.result!.length, (index) => false));
+        }
+        isLoading.value = false;
+      },
+    ).onError(
+      (error, stackTrace) {
+        Utils.showToastMessage(error.toString());
+        isLoading.value = false;
+      },
+    );
+  }
+
+  RxList<bool> isAddingCart = <bool>[].obs;
+
+  Future<void> addToCart(String inventoryId,int index) async{
+    isAddingCart[index] = true;
+    Map<String,dynamic> body = {
+    "productId":inventoryId,
+    "quantity": quantity[index]
+    };
+    _repo.addToCart(body).then((value) {
+      if(value[1] == 200){
+        SharedPreferencesUtils.saveInt(AppConstants.CART_COUNT, value[0]["cartItemCount"]);
+        Utils.showToastMessage(value[0]["message"]);
+      }else{
+        Utils.showToastMessage(value[0]["message"]);
+      }
+      isAddingCart[index] = false;
+    },).onError((error, stackTrace) {
+      Utils.showToastMessage(error.toString());
+      isAddingCart[index] = false;
+    },);
+  }
 }
+//{"message":"Added to cart","cartItemCount":10}

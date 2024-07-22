@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../bindings/cart_bindings.dart';
 import 'app_pages.dart';
 import 'views.dart';
 
@@ -17,11 +18,12 @@ class AppRouters {
     GetPage(
       name: AppPages.PRODUCT_PAGE,
       page: () =>const ProductPage(),
-        binding: ProductBinding()
+        binding: ProductBinding(),
     ),
     GetPage(
       name: AppPages.CART_PAGE,
       page: () =>const CartScreen(),
+        binding: CartBindings()
     ),
     GetPage(
       name: AppPages.SHIPPING_ADDRESS_PAGE,

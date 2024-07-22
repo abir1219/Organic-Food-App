@@ -8,4 +8,5 @@ class _AuthEndPoints {
   final String login = 'customer/signin';
   final String warehouse = 'ware-house';
   final String products = 'ware-house/products';
+  final String cart = 'cart';
   }

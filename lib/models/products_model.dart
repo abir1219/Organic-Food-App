@@ -1,30 +1,30 @@
 class ProductsModel {
-  List<Result>? result;
+  List<ProductResult>? result;
 
   ProductsModel({this.result});
 
   ProductsModel.fromJson(Map<String, dynamic> json) {
     if (json['result'] != null) {
-      result = <Result>[];
+      result = <ProductResult>[];
       json['result'].forEach((v) {
-        result!.add(new Result.fromJson(v));
+        result!.add(ProductResult.fromJson(v));
       });
     }
   }
 }
 
-class Result {
+class ProductResult {
   String? sId;
   Productvariant? productvariant;
   String? inventoryId;
   int? quantity;
 
-  Result({this.sId, this.productvariant, this.inventoryId, this.quantity});
+  ProductResult({this.sId, this.productvariant, this.inventoryId, this.quantity});
 
-  Result.fromJson(Map<String, dynamic> json) {
+  ProductResult.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     productvariant = json['productvariant'] != null
-        ? new Productvariant.fromJson(json['productvariant'])
+        ? Productvariant.fromJson(json['productvariant'])
         : null;
     inventoryId = json['inventoryId'];
     quantity = json['quantity'];
@@ -63,7 +63,7 @@ class Productvariant {
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     product =
-    json['product'] != null ? new Product.fromJson(json['product']) : null;
+    json['product'] != null ? Product.fromJson(json['product']) : null;
   }
 }
 

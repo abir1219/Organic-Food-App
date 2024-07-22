@@ -15,4 +15,10 @@ class ProductsRepository{
     dynamic response = _apiClient.getApi(url);
     return response;
   }
+
+  Future<dynamic> addToCart(var body){
+    String url = "${ApiEndPoints.BASE_LINK}${ApiEndPoints.authEndpoints.cart}";
+    dynamic response = _apiClient.postApi(url,body);
+    return response;
+  }
 }

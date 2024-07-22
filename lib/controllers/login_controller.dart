@@ -35,8 +35,10 @@ class LoginController extends GetxController{
       _loginRepo.login(body).then((value) async {
         if (value[1] == 200) {
           loginData.value = LoginModel.fromJson(value[0]);
-          SharedPreferencesUtils.saveString(AppConstants.USERID, loginData.value.data!.sId!);
-          SharedPreferencesUtils.saveString(AppConstants.USER_NAME, loginData.value.data!.name!);
+          SharedPreferencesUtils.saveString(AppConstants.USERID, loginData.value.data!.result!.sId!);
+          SharedPreferencesUtils.saveString(AppConstants.USER_NAME, loginData.value.data!.result!.name!);
+          debugPrint("ACCESS-->${loginData.value}");
+          SharedPreferencesUtils.saveString(AppConstants.ACCESS_TOKEN, loginData.value.accessToken!);
           Get.offNamed(AppPages.PRODUCT_PAGE);
         }else{
           Utils.showSnackBarMsg("Invalid Credentials.");
@@ -45,6 +47,7 @@ class LoginController extends GetxController{
       }).onError((error, stackTrace) {
         // if (kDebugMode) alice.showInspector();
         //Utils.showToastMessage(error.toString());
+        Utils.showToastMessage(error.toString());
         debugPrint("LOGIN_ERROR===>$error");
         isLoading.value = false;
       });

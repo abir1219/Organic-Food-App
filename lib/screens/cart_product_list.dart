@@ -1,9 +1,20 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:organic_food_new/controllers/cart_controller.dart';
+import 'package:organic_food_new/helper/api_end_points.dart';
+import 'package:organic_food_new/models/cart_model.dart';
+import 'package:organic_food_new/utils/utils.dart';
 
 import '../utils/app_colors.dart';
 
 class CartProductList extends StatefulWidget {
-  const CartProductList({super.key});
+  final CartController controller;
+  final List<CartResult> result;
+
+  const CartProductList(
+      {super.key, required this.result, required this.controller});
 
   @override
   State<CartProductList> createState() => _CartProductListState();
@@ -27,21 +38,38 @@ class _CartProductListState extends State<CartProductList> {
     var size = MediaQuery.sizeOf(context);
 
     return Scaffold(
-      body: ListView.builder(
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              _buildCartProductContainer(size, index),
-              if (index != productImage.length - 1)
-                const Divider(
-                  color: Colors.grey,
-                  thickness: 1,
-                )
-            ],
-          );
-        },
-        itemCount: productImage.length,
+      body: Obx(
+        () => widget.controller.isLoading.value
+            ? Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: AppColors.LOGO_BACKGROUND_COLOR, size: size.width * 0.08), //35
+              )
+            : widget.result.isNotEmpty
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          _buildCartProductContainer(size, index),
+                          if (index != widget.result.length - 1)
+                            const Divider(
+                              color: Colors.grey,
+                              thickness: 1,
+                            )
+                        ],
+                      );
+                    },
+                    itemCount: widget.controller.cartProducts.length,
+                  )
+                : const Center(
+                    child: Text(
+                      "Cart is empty",
+                      style: TextStyle(
+                          color: AppColors.LOGO_BACKGROUND_COLOR,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
       ),
     );
   }
@@ -63,7 +91,9 @@ class _CartProductListState extends State<CartProductList> {
                     // color: Colors.green,
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage(productImage[index]),
+                            image: NetworkImage(ApiEndPoints.BASE_LINK +
+                                widget.result[index].imageUrl![0]),
+                            // image: AssetImage(productImage[index]),
                             fit: BoxFit.fill)),
                   ),
                 ),
@@ -90,7 +120,7 @@ class _CartProductListState extends State<CartProductList> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            productName[index],
+                            widget.result[index].name!,
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -98,7 +128,20 @@ class _CartProductListState extends State<CartProductList> {
                           ),
                           GestureDetector(
                             onTap: () {
-
+                              AwesomeDialog(
+                                  context: context,
+                                  dialogType: DialogType.question,
+                                  animType: AnimType.rightSlide,
+                                  // title: 'Dialog Title',
+                                  desc: 'Remove cart?',
+                                  btnCancelOnPress: () {
+                                    // Navigator.pop(context);
+                                  },
+                              btnOkOnPress: () {
+                                    widget.controller.updateCart(widget.result[index].sId!, 0);
+                                    widget.result.removeAt(index);
+                              },
+                              ).show();
                             },
                             child: const Icon(
                               Icons.delete,
@@ -110,7 +153,7 @@ class _CartProductListState extends State<CartProductList> {
                       Row(
                         children: [
                           Text(
-                            productVariant[index],
+                            widget.result[index].value!,
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 12,
@@ -133,16 +176,31 @@ class _CartProductListState extends State<CartProductList> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Expanded(
-                                    child: SizedBox(
-                                      //width: size.width * .05,
-                                      child: Center(
-                                        child: Text(
-                                          "-",
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        if (widget.controller
+                                                .cartProdQuantity[index] >
+                                            0) {
+                                          widget.controller
+                                              .cartProdQuantity[index]--;
+                                          widget.controller.updateCart(
+                                              widget.controller
+                                                  .cartProducts[index].sId!,
+                                              (widget.controller
+                                                      .cartProdQuantity[index] ));
+                                        }
+                                      },
+                                      child: const SizedBox(
+                                        //width: size.width * .05,
+                                        child: Center(
+                                          child: Text(
+                                            "-",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.black),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -155,27 +213,46 @@ class _CartProductListState extends State<CartProductList> {
                                               width: 1, color: Colors.grey),
                                         ),
                                       ),
-                                      child: const Center(
-                                        child: Text(
-                                          "1",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black),
+                                      child: Center(
+                                        child: Obx(() => Text(
+                                            "${widget.controller.cartProdQuantity[index]}",
+                                            // "${widget.result[index].cartQuantity!}",
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.black),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  const Expanded(
-                                    child: SizedBox(
-                                      //width: size.width * .05,
-                                      child: Center(
-                                        child: Text(
-                                          "+",
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        if(widget.controller
+                                            .cartProducts[index].inStock! >  widget.controller
+                                            .cartProdQuantity[index]){
+                                          widget.controller
+                                              .cartProdQuantity[index]++;
+                                          widget.controller.updateCart(
+                                              widget.controller
+                                                  .cartProducts[index].sId!,
+                                              (widget.controller
+                                                  .cartProdQuantity[index]));
+                                        }else{
+                                          Utils.showToastMessage("Not enough quantity to update cart");
+                                        }
+                                      },
+                                      child: const SizedBox(
+                                        //width: size.width * .05,
+                                        child: Center(
+                                          child: Text(
+                                            "+",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.black),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -186,7 +263,7 @@ class _CartProductListState extends State<CartProductList> {
                           ),
                           Expanded(
                             child: Text(
-                              "₹${productPrice[index].toString()}",
+                              "₹${int.parse(widget.result[index].pricePerUnit!) * (widget.result[index].cartQuantity!)}",
                               textAlign: TextAlign.end,
                               style: const TextStyle(
                                   color: AppColors.LOGO_BACKGROUND_COLOR,

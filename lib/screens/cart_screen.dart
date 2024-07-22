@@ -2,14 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:organic_food_new/controllers/cart_controller.dart';
 import 'package:organic_food_new/router/app_pages.dart';
 import 'package:organic_food_new/screens/cart_product_list.dart';
 import 'package:organic_food_new/utils/app_colors.dart';
 import 'package:organic_food_new/widgets/app_widgets.dart';
 import 'package:organic_food_new/widgets/my_custom_bottom_nav.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  var controller = Get.find<CartController>();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.getAllCarts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +64,14 @@ class CartScreen extends StatelessWidget {
                     size: 22,
                   ),
                   Gap(size.width * 0.02),
-                  const Text(
-                    "Cart (3)",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.LOGO_BACKGROUND_COLOR,
-                      fontSize: 14,
+                  Obx(
+                    () => Text(
+                      "Cart (${controller.cartProducts.length})",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.LOGO_BACKGROUND_COLOR,
+                        fontSize: 14,
+                      ),
                     ),
                   ),
                 ],
@@ -67,7 +83,7 @@ class CartScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: size.height * 0.02),
                 child: Column(
                   children: [
-                    Container(
+                    /*Container(
                       margin:
                           EdgeInsets.symmetric(vertical: size.height * 0.01),
                       child: const Row(
@@ -89,8 +105,12 @@ class CartScreen extends StatelessWidget {
                           )),
                         ],
                       ),
-                    ),
-                    const Expanded(child: CartProductList())
+                    ),*/
+                    Expanded(
+                        child: CartProductList(
+                      result: controller.cartProducts,
+                      controller: controller,
+                    ))
                   ],
                 ),
               ),
@@ -99,43 +119,62 @@ class CartScreen extends StatelessWidget {
               // margin: EdgeInsets.symmetric(horizontal: size.width * 0.1),
               height: size.height * 0.12,
               width: size.height * 0.4,
-              padding: EdgeInsets.symmetric(vertical: size.height * 0.01,horizontal: size.height * 0.01),
+              padding: EdgeInsets.symmetric(
+                  vertical: size.height * 0.01, horizontal: size.height * 0.01),
               decoration: BoxDecoration(
-                  color: AppColors.LOGIN_BACKGROUND_COLOR.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(8),),
+                color: AppColors.LOGIN_BACKGROUND_COLOR.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(8),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Price Details (2 items)",style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.LOGO_BACKGROUND_COLOR,
-                      fontWeight: FontWeight.w600
-                  ),),
-                  const Divider(color: AppColors.LOGO_BACKGROUND_COLOR,),
+                  Obx(
+                    () => Text(
+                      "Price Details (${controller.cartProducts.length} items)",
+                      style: const TextStyle(
+                          fontSize: 14,
+                          color: AppColors.LOGO_BACKGROUND_COLOR,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  const Divider(
+                    color: AppColors.LOGO_BACKGROUND_COLOR,
+                  ),
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Row(
+                        Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text("Total: ",style: TextStyle(
-                                fontSize: 14,
-                                color: AppColors.LOGO_BACKGROUND_COLOR,
-                                fontWeight: FontWeight.w400
-                            ),),
-                            Text("₹650",style: TextStyle(
-                                fontSize: 14,
-                                color: AppColors.LOGO_BACKGROUND_COLOR,
-                                fontWeight: FontWeight.w600
-                            ),),
+                            const Text(
+                              "Total: ",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.LOGO_BACKGROUND_COLOR,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            Obx(
+                              () => Text(
+                                "₹${controller.total.value}",
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.LOGO_BACKGROUND_COLOR,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(
-                          width: size.width *0.4,
-                          child: AppWidgets.customButton(size: size, btnName: "Place Order", color: AppColors.LOGO_BACKGROUND_COLOR, func: () {
-                            Get.offNamed(AppPages.SHIPPING_ADDRESS_PAGE);
-                          },),
+                          width: size.width * 0.4,
+                          child: AppWidgets.customButton(
+                            size: size,
+                            btnName: "Place Order",
+                            color: AppColors.LOGO_BACKGROUND_COLOR,
+                            func: () {
+                              Get.offNamed(AppPages.SHIPPING_ADDRESS_PAGE);
+                            },
+                          ),
                         ),
                       ],
                     ),

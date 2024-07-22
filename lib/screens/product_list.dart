@@ -1,56 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:organic_food_new/controllers/products_controller.dart';
+import 'package:organic_food_new/helper/api_end_points.dart';
 import 'package:organic_food_new/utils/app_colors.dart';
 
 import '../widgets/app_widgets.dart';
 
-class ProductList extends StatefulWidget {
-  final String storeLocationId;
+class ProductList extends StatelessWidget {
+  // final String storeLocationId;
+  final ProductsController controller;
 
-  const ProductList({super.key, required this.storeLocationId});
+  const ProductList({
+    super.key,
+    required this.controller,
+    /*required this.storeLocationId*/
+  });
 
-  @override
-  State<ProductList> createState() => _ProductListState();
-}
-
-class _ProductListState extends State<ProductList> {
-  List<String> productImage = [
-    "assets/images/chicken.png",
-    "assets/images/pea.png",
-    "assets/images/sausage.png",
-  ];
-
-  List<String> productName = ["Frozen Chicken", "Frozen pea Packet", "Sausage"];
-
-  List<String> productVariant = ["500gm", "1Kg", "500gm"];
-
-  List<String> productDescription = [
-    "Lorem ipsum dolor sit  amet, consectetur adipiscing elit, sed do eiusmod tempor...",
-    "Lorem ipsum dolor sit  amet, consectetur adipiscing elit, sed do eiusmod tempor...",
-    "Lorem ipsum dolor sit  amet, consectetur adipiscing elit, sed do eiusmod tempor...",
-  ];
-
-  List<double> productPrice = [196.39, 425.59, 450.00];
-
+  // List<String> productImage = [
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
 
     return Scaffold(
-      body: ListView.builder(
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              _buildProductContainer(size, index),
-              if (index != productImage.length - 1)
-                const Divider(
-                  color: Colors.grey,
-                  thickness: 1,
-                )
-            ],
-          );
-        },
-        itemCount: productImage.length,
+      body: Obx(
+        () => controller.isLoading.value
+            ? Center(
+            child: LoadingAnimationWidget.staggeredDotsWave(
+                color: AppColors.LOGO_BACKGROUND_COLOR, size: size.width * 0.08),
+                          )
+            : ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  debugPrint("LENGTH-->${controller.products.length}");
+                  return Column(
+                    children: [
+                      _buildProductContainer(size, index),
+                      if (index != controller.products.length - 1)
+                        const Divider(
+                          color: Colors.grey,
+                          thickness: 1,
+                        )
+                    ],
+                  );
+                },
+                itemCount: controller.products.length//productImage.length,
+              ),
       ),
     );
   }
@@ -72,7 +67,8 @@ class _ProductListState extends State<ProductList> {
                     // color: Colors.green,
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage(productImage[index]),
+                          image: NetworkImage(ApiEndPoints.BASE_LINK+controller.products[index].productvariant!.product!.imageUrl![0]),//imageUrl
+                            // image: AssetImage(productImage[index]),
                             fit: BoxFit.fill)),
                   ),
                 ),
@@ -84,11 +80,20 @@ class _ProductListState extends State<ProductList> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Expanded(
-                        child: SizedBox(
-                          //width: size.width * .05,
-                          child: Center(
-                            child: Text("-",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w700,color: Colors.black),),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => controller.decrementQuantity(index),
+                          child: const SizedBox(
+                            //width: size.width * .05,
+                            child: Center(
+                              child: Text(
+                                "-",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -100,16 +105,32 @@ class _ProductListState extends State<ProductList> {
                                   BorderSide(width: 1, color: Colors.grey),
                             ),
                           ),
-                          child: const Center(
-                            child: Text("1",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w700,color: Colors.black),),
+                          child: Center(
+                            child: Obx(() => Text(
+                                "${controller.quantity[index]}",
+                                style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                      const Expanded(
-                        child: SizedBox(
-                          //width: size.width * .05,
-                          child: Center(
-                            child: Text("+",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w700,color: Colors.black),),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => controller.incrementQuantity(index),
+                          child: const SizedBox(
+                            //width: size.width * .05,
+                            child: Center(
+                              child: Text(
+                                "+",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -134,28 +155,32 @@ class _ProductListState extends State<ProductList> {
                     // mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text(
-                        productName[index],
+                        controller.products[index].productvariant!.product!.name!,
+                        //productName[index],
                         style: const TextStyle(
                             color: Colors.black,
                             fontSize: 14,
                             fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        productVariant[index],
+                        controller.products[index].productvariant!.value!,
+                        // productVariant[index],
                         style: const TextStyle(
                             color: Colors.black,
                             fontSize: 12,
                             fontWeight: FontWeight.w300),
                       ),
                       Text(
-                        productDescription[index],
+                          controller.products[index].productvariant!.product!.description!,
+                        // productDescription[index],
                         style: const TextStyle(
                             color: Colors.black,
                             fontSize: 12,
                             fontWeight: FontWeight.w300),
                       ),
                       Text(
-                        "₹${productPrice[index].toString()}",
+                        "₹${controller.products[index].productvariant!.price!}",
+                        // "₹${productPrice[index].toString()}",
                         style: const TextStyle(
                             color: AppColors.LOGO_BACKGROUND_COLOR,
                             fontSize: 14,
@@ -166,7 +191,14 @@ class _ProductListState extends State<ProductList> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(right: size.width * 0.2),
-                  child: AppWidgets.customButton(size: size, btnName: "Add to Cart", color: AppColors.LOGO_BACKGROUND_COLOR, func: () => null,),
+                  child: Obx(() => AppWidgets.customButton(
+                      size: size,
+                      btnName: "Add to Cart",
+                      color: AppColors.LOGO_BACKGROUND_COLOR,
+                      isLoading: controller.isAddingCart[index],
+                      func: () => controller.addToCart(controller.products[index].inventoryId!,index),
+                    ),
+                  ),
                 )
               ],
             ),

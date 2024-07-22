@@ -156,9 +156,9 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       ),
                     ),
                     Gap(size.height * 0.01),
-                    const Expanded(
-                      child: CartProductList(),
-                    ),
+                    // Expanded(
+                    //   child: CartProductList(result: [],),
+                    // ),
                     Container(
                       // margin: EdgeInsets.symmetric(horizontal: size.width * 0.1),
                       height: size.height * 0.17,
