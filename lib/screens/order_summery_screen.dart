@@ -8,6 +8,7 @@ import 'package:organic_food_new/screens/cart_product_list.dart';
 import 'package:organic_food_new/screens/payment_mode_screen.dart';
 import 'package:organic_food_new/utils/app_colors.dart';
 import 'package:organic_food_new/utils/sharedpreference_utils.dart';
+import 'package:organic_food_new/utils/utils.dart';
 import 'package:organic_food_new/widgets/app_widgets.dart';
 import 'package:organic_food_new/widgets/my_custom_bottom_nav.dart';
 
@@ -256,16 +257,20 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                               btnName: "Place Order",
                               color: AppColors.LOGO_BACKGROUND_COLOR,
                               func: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return PaymentModeScreen(
-                                      controller: controller,
-                                      addressId: Get.parameters['addressId']
-                                          .toString(),
-                                    );
-                                  },
-                                );
+                                if(controller.cartProducts.isNotEmpty){
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return PaymentModeScreen(
+                                        controller: controller,
+                                        addressId: Get.parameters['addressId']
+                                            .toString(),
+                                      );
+                                    },
+                                  );
+                                }else{
+                                  Utils.showToastMessage("Your cart is empty");
+                                }
                               },
                             ),
                           ),

@@ -4,7 +4,10 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:organic_food_new/controllers/cart_controller.dart';
 import 'package:organic_food_new/router/app_pages.dart';
+import 'package:organic_food_new/utils/app_constants.dart';
+import 'package:organic_food_new/utils/sharedpreference_utils.dart';
 import 'package:organic_food_new/utils/utils.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../utils/app_colors.dart';
 import '../widgets/app_widgets.dart';
@@ -23,12 +26,15 @@ class PaymentModeScreen extends StatefulWidget {
 class _PaymentModeScreenState extends State<PaymentModeScreen> {
   int _selectedIndex = -1;
   String paymentType = "";
+  String profileName = "";
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
 
     debugPrint("addressIndex-->${widget.controller.cartIds}");
+
+    profileName = SharedPreferencesUtils.getString(AppConstants.USER_NAME)!;
 
     return Dialog(
       child: StatefulBuilder(builder: (stfContext, stfSetState) {
@@ -140,6 +146,46 @@ class _PaymentModeScreenState extends State<PaymentModeScreen> {
                           //   Get.offNamed(AppPages.ORDER_DETAILS_PAGE);
                           // },);
                         } else if (_selectedIndex == 2) {
+                          Navigator.pop(context);
+                          Razorpay razorpay = Razorpay();
+                          var options = {
+                            // 'key': 'rzp_live_azPrGD7BGOIuFj', //MotivateU Live key
+                            'key': 'rzp_test_cWWpEDrhGv9EmU',  //MotivateU Test key
+                            // 'amount': double.parse(controller.subscriptionModel.value.result![index].totalPrice.round().toString()).round() * 100,
+                            // 'amount': (controller.subscriptionModel.value.result![index].totalPrice.round() - couponController.discountedPrice.value.round()) * 100,
+                            'amount': (widget.controller.total.value) * 100,
+                            'name': profileName,
+                            // 'orderId' : orderId,
+                            'description': 'Organic Food',
+                            'retry': {'enabled': true, 'max_count': 1},
+                            'send_sms_hash': true,
+                            'theme': {
+                              'color': '#580E0E'
+                              //AppColors.BOTTOM_SHEET_BACKGROUND, // Set your desired color
+                            },
+                            // 'image': "https://motivateu.in/wp-content/uploads/2023/12/yoast-logo.jpg",
+                            //"theme.color": AppColors.BOTTOM_SHEET_BACKGROUND,
+                            // 'prefill': {'contact': '$phoneNo', 'email': 'test@razorpay.com'},
+                            'prefill': {
+                              'contact': '9999999999',
+                              'email': 'abcd@gmail.com'
+                              //'test@razorpay.com'
+                            },
+                            'external': {
+                              'wallets': ['paytm']
+                            }
+                          };
+                          razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,
+                              handlePaymentErrorResponse);
+                          razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
+                              handlePaymentSuccessResponse);
+                          razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
+                              handleExternalWalletSelected);
+                          try {
+                            razorpay.open(options);
+                          } catch (e) {
+                            print(e.toString());
+                          }
                         } else if (_selectedIndex == -1) {
                           Utils.showToastMessage("Select payment mode");
                         }
@@ -239,5 +285,45 @@ class _PaymentModeScreenState extends State<PaymentModeScreen> {
         ),
       ),
     );
+  }
+
+
+  void handlePaymentErrorResponse(PaymentFailureResponse response) {
+    /*
+    * PaymentFailureResponse contains three values:
+    * 1. Error Code
+    * 2. Error Description
+    * 3. Metadata
+    * */
+    //showAlertDialog(context, "Payment Failed", "Code: ${response.code}\nDescription: ${response.message}\nMetadata:${response.error.toString()}");
+  }
+
+  void handlePaymentSuccessResponse(PaymentSuccessResponse response) {
+    /*
+    * Payment Success Response contains three values:
+    * 1. Order ID
+    * 2. Payment ID
+    * 3. Signature
+    * */
+    debugPrint(
+        "~~~Payment Successful~~~\Order ID: ${response.orderId}\nPayment ID: ${response.paymentId}\nSignature: ${response.signature}");
+    //showAlertDialog(context, "Payment Successful", "Payment ID: ${response.paymentId}");
+    widget.controller.placeOrder(
+        widget.addressId,
+        paymentType,(value) {
+      if (value[1] == 201) {
+        // Navigator.pop(context);
+        Get.offNamed(
+            AppPages.ORDER_DETAILS_PAGE,
+            parameters: {
+              'orderId': value[0]['result']['_id']
+            });
+      }
+    });
+  }
+
+  void handleExternalWalletSelected(ExternalWalletResponse response) {
+    // showAlertDialog(
+    //     context, "External Wallet Selected", "${response.walletName}");
   }
 }

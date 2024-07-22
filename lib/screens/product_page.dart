@@ -248,6 +248,7 @@ class _ProductPageState extends State<ProductPage> {
                                               onTap: () => controller
                                                   .selectLocationId(index),
                                               child: Container(
+                                                color: Colors.transparent,
                                                 margin: EdgeInsets.symmetric(
                                                     vertical: size.height * 0.01),
                                                 padding: EdgeInsets.symmetric(

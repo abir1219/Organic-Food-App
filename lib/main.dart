@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
-      title: 'Flutter Demo',
+      title: 'Organic Food',
       getPages: AppRouters.pages,
       defaultTransition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 300),
