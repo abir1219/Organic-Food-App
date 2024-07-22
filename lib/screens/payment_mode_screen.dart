@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:organic_food_new/controllers/cart_controller.dart';
 import 'package:organic_food_new/router/app_pages.dart';
+import 'package:organic_food_new/utils/utils.dart';
 
 import '../utils/app_colors.dart';
 import '../widgets/app_widgets.dart';
 
 class PaymentModeScreen extends StatefulWidget {
-  const PaymentModeScreen({super.key});
+  final CartController controller;
+  final String addressId;
+
+  const PaymentModeScreen(
+      {super.key, required this.controller, required this.addressId});
 
   @override
   State<PaymentModeScreen> createState() => _PaymentModeScreenState();
@@ -16,10 +22,13 @@ class PaymentModeScreen extends StatefulWidget {
 
 class _PaymentModeScreenState extends State<PaymentModeScreen> {
   int _selectedIndex = -1;
+  String paymentType = "";
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
+
+    debugPrint("addressIndex-->${widget.controller.cartIds}");
 
     return Dialog(
       child: StatefulBuilder(builder: (stfContext, stfSetState) {
@@ -54,55 +63,85 @@ class _PaymentModeScreenState extends State<PaymentModeScreen> {
                   SizedBox(
                     width: size.width * 0.5,
                     child: AppWidgets.customButton(
+                      isLoading: _selectedIndex == 1
+                          ? widget.controller.isOrdering.value
+                          : false,
                       size: size,
                       btnName: "Make Payment",
                       color: AppColors.LOGO_BACKGROUND_COLOR,
                       func: () {
                         debugPrint("---$_selectedIndex");
                         if (_selectedIndex == 1) {
-                          Navigator.pop(context);
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              Future.delayed(
-                                const Duration(seconds: 3),
-                                    () {
-                                  Navigator.of(context).pop(true); // Close the dialog
-                                  Get.offNamed(AppPages.ORDER_DETAILS_PAGE);
-                                },
-                              );
-                              return Dialog(
-                                child: Container(
-                                  height: size.height * 0.3,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey.withOpacity(0.3),
-                                            offset: const Offset(0.5, 0.5),
-                                            blurRadius: 1.2,
-                                            spreadRadius: 1)
-                                      ]),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        "assets/images/celebrate.svg",
-                                        height: size.height * 0.15,
+                          widget.controller.placeOrder(
+                            widget.addressId,
+                            paymentType,
+                            (value) {
+                              if (value[1] == 201) {
+                                Navigator.pop(context);
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    Future.delayed(
+                                      const Duration(seconds: 3),
+                                      () {
+                                        Navigator.of(context)
+                                            .pop(true); // Close the dialog
+                                        Get.offNamed(
+                                            AppPages.ORDER_DETAILS_PAGE,
+                                            parameters: {
+                                              'orderId': value[0]['result']['_id']
+                                            });
+                                      },
+                                    );
+                                    return Dialog(
+                                      child: Container(
+                                        height: size.height * 0.3,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.3),
+                                                  offset:
+                                                      const Offset(0.5, 0.5),
+                                                  blurRadius: 1.2,
+                                                  spreadRadius: 1)
+                                            ]),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SvgPicture.asset(
+                                              "assets/images/celebrate.svg",
+                                              height: size.height * 0.15,
+                                            ),
+                                            Gap(size.height * 0.02),
+                                            const Text(
+                                              "Order Successfully Placed",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: AppColors
+                                                      .LOGO_BACKGROUND_COLOR,
+                                                  fontWeight: FontWeight.w500),
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                      Gap(size.height * 0.02),
-                                      const Text("Payment Successful!",style: TextStyle(fontSize: 16,color: AppColors.LOGO_BACKGROUND_COLOR,fontWeight: FontWeight.w600),)
-                                    ],
-                                  ),
-                                ),
-                              );
+                                    );
+                                  },
+                                );
+                              }
                             },
                           );
                           // Future.delayed(const Duration(seconds: 3),() {
                           //   Navigator.pop(context); // Close the dialog
                           //   Get.offNamed(AppPages.ORDER_DETAILS_PAGE);
                           // },);
+                        } else if (_selectedIndex == 2) {
+                        } else if (_selectedIndex == -1) {
+                          Utils.showToastMessage("Select payment mode");
                         }
                       },
                     ),
@@ -144,6 +183,11 @@ class _PaymentModeScreenState extends State<PaymentModeScreen> {
           debugPrint("~~~~~TAP~~~~~$_selectedIndex");
           _selectedIndex = index;
         });
+        if (index == 1) {
+          paymentType = "cod";
+        } else if (index == 2) {
+          paymentType = "online";
+        }
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: size.height * 0.02),

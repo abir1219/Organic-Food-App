@@ -11,3 +11,4 @@ export 'package:organic_food_new/screens/order_summery_screen.dart';
 //Bindings packages
 export 'package:organic_food_new/bindings/login_binding.dart';
 export 'package:organic_food_new/bindings/product_binding.dart';
+export 'package:organic_food_new/bindings/cart_bindings.dart';

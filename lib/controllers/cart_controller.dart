@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:organic_food_new/models/cart_model.dart';
 import 'package:organic_food_new/models/shipping_address_model.dart';
 import 'package:organic_food_new/repository/cart_repository.dart';
@@ -24,6 +23,7 @@ class CartController extends GetxController {
   RxList<ShippingAddressResult> get addresses => _addresses;
 
   RxString addressId = "".obs;
+  RxInt selectedAddressIndex = 0.obs;
 
   final RxList<String> _cartIds = <String>[].obs;
 
@@ -88,7 +88,7 @@ class CartController extends GetxController {
       (error, stackTrace) {
         Utils.showToastMessage(error.toString());
         debugPrint("UPDATE_CART-->$error");
-        isLoading.value = false;
+        // isLoading.value = false;
       },
     );
   }
@@ -97,21 +97,42 @@ class CartController extends GetxController {
 
   Future<void> getAllAddress() async {
     _addresses.clear();
+    addresses.clear();
     isAddressLoading.value = true;
-    _repo.getAddressList().then((value) {
-      if(value[1] == 200){
-        shippingAddressModel.value = ShippingAddressModel.fromJson(value[0]);
-        _addresses.assignAll(List<ShippingAddressResult>.generate(shippingAddressModel.value.result!.length,
-                (index) => shippingAddressModel.value.result![index]));
-      }
+    _repo.getAddressList().then(
+      (value) {
+        if (value[1] == 200) {
+          shippingAddressModel.value = ShippingAddressModel.fromJson(value[0]);
+          _addresses.assignAll(List<ShippingAddressResult>.generate(
+              shippingAddressModel.value.result!.length,
+              (index) => shippingAddressModel.value.result![index]));
+        }
         isAddressLoading.value = false;
       },
     ).onError(
       (error, stackTrace) {
         isAddressLoading.value = false;
         Utils.showToastMessage(error.toString());
-        debugPrint("GET_SHIPPING_ADDRESS-->$error");
+        debugPrint("GET_SHIPPING_ADDRESS_ERROR-->$error");
       },
     );
+  }
+
+  RxBool isOrdering = false.obs;
+  Future<void> placeOrder(String addressId,String paymentMode,void Function(dynamic value) func) async{
+    isOrdering.value = true;
+    Map<String,dynamic> body = {
+      "cartItems": cartIds,
+      "addressId": addressId,
+      "paymentType": paymentMode
+    };
+    _repo.placeOrder(body).then((value) {
+      func(value);
+      isOrdering.value = false;
+    },).onError((error, stackTrace) {
+      isOrdering.value = false;
+      Utils.showToastMessage(error.toString());
+      debugPrint("GET_SHIPPING_ADDRESS-->$error");
+    },);
   }
 }

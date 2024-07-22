@@ -45,6 +45,7 @@ class SharedPreferencesUtils{
   }
 
   static Future<void> clear() async {
+    await _preferences!.clear();
     // if(containsKey(AppConstants.isREMEMBERED) && getBool(AppConstants.isREMEMBERED) == true){
     //
     // }

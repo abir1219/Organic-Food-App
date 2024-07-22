@@ -28,11 +28,11 @@ class Utils {
             // Container(
             //   margin: EdgeInsets.symmetric(horizontal: 10.sp),
             //   height: 15.sp,width: 15.sp,child: const Center(child: CircularProgressIndicator(color: Colors.white,)),),
-            Text(msg),
+            Text(msg,style: const TextStyle(color: Colors.white,fontSize: 14),),
           ],
         ),
         // duration: Duration(seconds: 2), // Adjust the duration as per your requirement
-        backgroundColor: Colors.black87,
+        backgroundColor: AppColors.LOGO_BACKGROUND_COLOR,//Colors.black87,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),

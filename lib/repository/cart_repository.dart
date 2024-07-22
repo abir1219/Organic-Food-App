@@ -22,4 +22,10 @@ class CartRepository{
     return response;
   }
 
+  Future<dynamic> placeOrder(var body){
+    String url = "${ApiEndPoints.BASE_LINK}${ApiEndPoints.authEndpoints.placeOrder}";
+    dynamic response = _apiClient.postApi(url,body);
+    return response;
+  }
+
 }

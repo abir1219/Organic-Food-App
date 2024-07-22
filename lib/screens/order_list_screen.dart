@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:organic_food_new/controllers/order_controller.dart';
+import 'package:organic_food_new/helper/api_end_points.dart';
 import 'package:organic_food_new/router/app_pages.dart';
 import 'package:organic_food_new/utils/app_colors.dart';
 import 'package:organic_food_new/widgets/my_custom_bottom_nav.dart';
@@ -14,6 +17,14 @@ class OrderListScreen extends StatefulWidget {
 }
 
 class _OrderListScreenState extends State<OrderListScreen> {
+  var controller = Get.find<OrderController>();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.getOrderList();
+  }
+
   List<String> productImage = [
     "assets/images/chicken.png",
     "assets/images/pea.png",
@@ -40,7 +51,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
       canPop: false,
       onPopInvoked: (didPop) {
         debugPrint("didPop-->$didPop");
-        if(didPop) {
+        if (didPop) {
           return;
         }
         Get.offNamed(AppPages.PRODUCT_PAGE);
@@ -69,7 +80,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
               Container(
                 alignment: Alignment.centerLeft,
                 margin: EdgeInsets.symmetric(
-                    horizontal: size.width * 0.02, vertical: size.height * 0.005),
+                    horizontal: size.width * 0.02,
+                    vertical: size.height * 0.005),
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -90,13 +102,30 @@ class _OrderListScreenState extends State<OrderListScreen> {
               Expanded(
                   child: Container(
                 margin: EdgeInsets.symmetric(
-                    horizontal: size.width * 0.02, vertical: size.height * 0.005),
+                    horizontal: size.width * 0.02,
+                    vertical: size.height * 0.005),
                 color: Colors.transparent,
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return _orderContainerBuilder(size, index);
-                  },
-                  itemCount: productPrice.length,
+                child: Obx(
+                  () => controller.isLoading.value
+                      ? Center(
+                          child: LoadingAnimationWidget.staggeredDotsWave(
+                              color: AppColors.LOGO_BACKGROUND_COLOR,
+                              size: size.width * 0.08), //35
+                        )
+                      : NotificationListener<OverscrollIndicatorNotification>(
+                          onNotification:
+                              (OverscrollIndicatorNotification notification) {
+                            notification.disallowIndicator();
+                            return false;
+                          },
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return _orderContainerBuilder(size, index);
+                            },
+                            itemCount:
+                                controller.orders.length, //productPrice.length,
+                          ),
+                        ),
                 ),
               ))
             ],
@@ -111,7 +140,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
   Widget _orderContainerBuilder(Size size, int index) {
     return GestureDetector(
-      onTap: () => Get.offNamed(AppPages.ORDER_DETAILS_PAGE),
+      onTap: () => Get.offNamed(AppPages.ORDER_DETAILS_PAGE,
+          parameters: {'orderId': controller.orders[index].sId!}),
       child: Container(
         decoration: BoxDecoration(
             color: Colors.white,
@@ -136,18 +166,24 @@ class _OrderListScreenState extends State<OrderListScreen> {
               width: size.width * 0.35,
               // color: Colors.green,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8),
                   image: DecorationImage(
-                      image: AssetImage(productImage[index]), fit: BoxFit.fill)),
+                      // image: AssetImage(productImage[index]), fit: BoxFit.fill)),
+                      image: NetworkImage(ApiEndPoints.BASE_LINK +
+                          controller.orders[index].orderItems![0].imageUrl![0]),
+                      fit: BoxFit.fill)),
             ),
             Expanded(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.02),
-                  child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.02),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   Text(
-                    productName[index],
+                    controller.orders[index].orderItems![0].productName!,
+                    //productName[index],
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -157,7 +193,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   ),
                   Gap(size.height * 0.005),
                   Text(
-                    productVariant[index],
+                    controller.orders[index].orderItems![0].value!,
+                    // productVariant[index],
                     style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 12,
@@ -165,7 +202,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   ),
                   Gap(size.height * 0.005),
                   Text(
-                    productDescription[index],
+                    controller.orders[index].orderItems![0].productDescription!,
+                    //productDescription[index],
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -175,15 +213,16 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   ),
                   Gap(size.height * 0.005),
                   Text(
-                    "₹${productPrice[index]}",
+                    "₹ ${controller.orders[index].orderItems![0].totalPrice!.toString()}",
+                    //"₹${productPrice[index]}",
                     style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
                         color: AppColors.LOGO_BACKGROUND_COLOR),
                   ),
-                              ],
-                            ),
-                ))
+                ],
+              ),
+            ))
           ],
         ),
       ),

@@ -1,9 +1,11 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:organic_food_new/router/app_pages.dart';
 import 'package:organic_food_new/utils/app_colors.dart';
+import 'package:organic_food_new/utils/sharedpreference_utils.dart';
 
 class MyCustomBottomNav extends StatefulWidget {
   final int pageIndex;
@@ -58,7 +60,20 @@ class _State extends State<MyCustomBottomNav> {
               }else if(index == 2) {
                 Get.offNamed(AppPages.ORDER_LIST_PAGE);
               }else if(index == 3) {
-                Get.offNamed(AppPages.PRODUCT_PAGE);
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.question,
+                  animType: AnimType.rightSlide,
+                  // title: 'Dialog Title',
+                  desc: 'Do you want to logout?',
+                  btnCancelOnPress: () {
+                    // Navigator.pop(context);
+                  },
+                  btnOkOnPress: () {
+                    SharedPreferencesUtils.clear();
+                    Get.offAllNamed(AppPages.LOGIN_PAGE);
+                  },
+                ).show();
               }
               setState(() {
                 _currentIndex = index;

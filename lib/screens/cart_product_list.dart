@@ -9,49 +9,33 @@ import 'package:organic_food_new/utils/utils.dart';
 
 import '../utils/app_colors.dart';
 
-class CartProductList extends StatefulWidget {
+class CartProductList extends StatelessWidget {
   final CartController controller;
   final List<CartResult> result;
 
   const CartProductList(
       {super.key, required this.result, required this.controller});
 
-  @override
-  State<CartProductList> createState() => _CartProductListState();
-}
-
-class _CartProductListState extends State<CartProductList> {
-  List<String> productImage = [
-    "assets/images/chicken.png",
-    "assets/images/pea.png",
-    "assets/images/sausage.png",
-  ];
-
-  List<String> productName = ["Frozen Chicken", "Frozen pea Packet", "Sausage"];
-
-  List<String> productVariant = ["500gm", "1Kg", "500gm"];
-
-  List<double> productPrice = [196.39, 425.59, 450.00];
-
+  // List<String> productImage = [
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
 
     return Scaffold(
       body: Obx(
-        () => widget.controller.isLoading.value
+        () => controller.isLoading.value
             ? Center(
                 child: LoadingAnimationWidget.staggeredDotsWave(
                     color: AppColors.LOGO_BACKGROUND_COLOR, size: size.width * 0.08), //35
               )
-            : widget.result.isNotEmpty
+            : result.isNotEmpty
                 ? ListView.builder(
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return Column(
                         children: [
-                          _buildCartProductContainer(size, index),
-                          if (index != widget.result.length - 1)
+                          _buildCartProductContainer(size, index,context),
+                          if (index != result.length - 1)
                             const Divider(
                               color: Colors.grey,
                               thickness: 1,
@@ -59,7 +43,7 @@ class _CartProductListState extends State<CartProductList> {
                         ],
                       );
                     },
-                    itemCount: widget.result.length,
+                    itemCount: result.length,
                   )
                 : const Center(
                     child: Text(
@@ -74,7 +58,7 @@ class _CartProductListState extends State<CartProductList> {
     );
   }
 
-  Widget _buildCartProductContainer(Size size, int index) {
+  Widget _buildCartProductContainer(Size size, int index,BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: size.height * 0.01),
       child: Row(
@@ -92,7 +76,7 @@ class _CartProductListState extends State<CartProductList> {
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: NetworkImage(ApiEndPoints.BASE_LINK +
-                                widget.result[index].imageUrl![0]),
+                                result[index].imageUrl![0]),
                             // image: AssetImage(productImage[index]),
                             fit: BoxFit.fill)),
                   ),
@@ -120,7 +104,7 @@ class _CartProductListState extends State<CartProductList> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            widget.result[index].name!,
+                            result[index].name!,
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -138,8 +122,8 @@ class _CartProductListState extends State<CartProductList> {
                                     // Navigator.pop(context);
                                   },
                               btnOkOnPress: () {
-                                    widget.controller.updateCart(widget.result[index].sId!, 0);
-                                    widget.result.removeAt(index);
+                                    controller.updateCart(result[index].sId!, 0);
+                                    result.removeAt(index);
                               },
                               ).show();
                             },
@@ -153,7 +137,7 @@ class _CartProductListState extends State<CartProductList> {
                       Row(
                         children: [
                           Text(
-                            widget.result[index].value!,
+                            result[index].value!,
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 12,
@@ -179,15 +163,15 @@ class _CartProductListState extends State<CartProductList> {
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
-                                        if (widget.controller
+                                        if (controller
                                                 .cartProdQuantity[index] >
                                             0) {
-                                          widget.controller
+                                          controller
                                               .cartProdQuantity[index]--;
-                                          widget.controller.updateCart(
-                                              widget.controller
+                                          controller.updateCart(
+                                              controller
                                                   .cartProducts[index].sId!,
-                                              (widget.controller
+                                              (controller
                                                       .cartProdQuantity[index] ));
                                         }
                                       },
@@ -215,7 +199,7 @@ class _CartProductListState extends State<CartProductList> {
                                       ),
                                       child: Center(
                                         child: Obx(() => Text(
-                                            "${widget.controller.cartProdQuantity[index]}",
+                                            "${controller.cartProdQuantity[index]}",
                                             // "${widget.result[index].cartQuantity!}",
                                             style: const TextStyle(
                                                 fontSize: 16,
@@ -229,15 +213,15 @@ class _CartProductListState extends State<CartProductList> {
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
-                                        if(widget.controller
-                                            .cartProducts[index].inStock! >  widget.controller
+                                        if(controller
+                                            .cartProducts[index].inStock! >  controller
                                             .cartProdQuantity[index]){
-                                          widget.controller
+                                          controller
                                               .cartProdQuantity[index]++;
-                                          widget.controller.updateCart(
-                                              widget.controller
+                                          controller.updateCart(
+                                              controller
                                                   .cartProducts[index].sId!,
-                                              (widget.controller
+                                              (controller
                                                   .cartProdQuantity[index]));
                                         }else{
                                           Utils.showToastMessage("Not enough quantity to update cart");
@@ -263,7 +247,7 @@ class _CartProductListState extends State<CartProductList> {
                           ),
                           Expanded(
                             child: Text(
-                              "₹${int.parse(widget.result[index].pricePerUnit!) * (widget.result[index].cartQuantity!)}",
+                              "₹${int.parse(result[index].pricePerUnit!) * (result[index].cartQuantity!)}",
                               textAlign: TextAlign.end,
                               style: const TextStyle(
                                   color: AppColors.LOGO_BACKGROUND_COLOR,

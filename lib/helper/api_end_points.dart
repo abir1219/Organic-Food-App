@@ -10,4 +10,7 @@ class _AuthEndPoints {
   final String products = 'ware-house/products';
   final String cart = 'cart';
   final String addresses = 'customer/address-list';
+  final String placeOrder = 'order';
+  final String orderList = 'order/history';
+  final String orderDetail = 'order/order-details';
   }
