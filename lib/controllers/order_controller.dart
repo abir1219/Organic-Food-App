@@ -31,15 +31,12 @@ class OrderController extends GetxController {
           for (int i = 0; i < orderListModel.value.result!.length; i++) {
             int totalPrice = 0;
             // Loop through each order item in the current order
-            for (int j = 0;
-                j < orderListModel.value.result![i].orderItems!.length;
-                j++) {
+            for (int j = 0; j < orderListModel.value.result![i].orderItems!.length; j++) {
               // Add the totalPrice of the current order item to totalPrice
-              totalPrice +=
-                  orderListModel.value.result![i].orderItems![j].totalPrice!;
+              totalPrice += orderListModel.value.result![i].orderItems![j].totalPrice!;
               //debugPrint("TOTAL--->$totalPrice");
             }
-            debugPrint("\n");
+            //debugPrint("\n");
             // Add the current totalPrice to totalList
             totalList.add(totalPrice);
           }
