@@ -37,7 +37,7 @@ class OrderController extends GetxController {
               // Add the totalPrice of the current order item to totalPrice
               totalPrice +=
                   orderListModel.value.result![i].orderItems![j].totalPrice!;
-              debugPrint("TOTAL--->$totalPrice");
+              //debugPrint("TOTAL--->$totalPrice");
             }
             debugPrint("\n");
             // Add the current totalPrice to totalList

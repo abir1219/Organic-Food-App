@@ -65,7 +65,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   ),
                 ),
               ),
-              Expanded(
+              SingleChildScrollView(
                 child: Container(
                   margin: EdgeInsets.symmetric(
                       horizontal: size.width * 0.02,
@@ -93,6 +93,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 color: AppColors.LOGO_BACKGROUND_COLOR,
                                 thickness: 0.5,
                               ),
+                              Gap(size.height * 0.005),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -120,6 +121,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                   ),
                                 ],
                               ),
+                              Gap(size.height * 0.01),
                               Text(
                                 "# ${controller.orderListModel.value.result![0].orderNumber}",
                                 style: const TextStyle(
@@ -135,7 +137,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     fontWeight: FontWeight.w600,
                                     color: Colors.black),
                               ),
-                              Gap(size.height * .002),
+                              Gap(size.height * .01),
                               Text(
                                 "${SharedPreferencesUtils.getString(AppConstants.USER_NAME)}",
                                 style: const TextStyle(
@@ -143,6 +145,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     fontWeight: FontWeight.w600,
                                     color: Colors.black),
                               ),
+                              Gap(size.height * .005),
                               Text(
                                 controller.orderListModel.value.result![0]
                                     .address!.address!,
@@ -151,6 +154,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black),
                               ),
+                              Gap(size.height * .005),
                               Text(
                                 "${controller.orderListModel.value.result![0].address!.city!} - ${controller.orderListModel.value.result![0].address!.pincode!}",
                                 style: const TextStyle(
@@ -158,6 +162,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black),
                               ),
+                              Gap(size.height * .005),
                               Text(
                                 controller.orderListModel.value.result![0]
                                     .address!.state!,
@@ -181,6 +186,31 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Gap(size.height * 0.02),
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "Store Location",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black),
+                                        ),
+                                        Text(
+                                          controller.orders[0].orderItems![0].warehouseDetails!.city!,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black),
+                                        ),
+                                      ],
+                                    ),
+                                    Divider(
+                                      color: AppColors.LOGO_BACKGROUND_COLOR
+                                          .withOpacity(0.3),
+                                      thickness: 0.5,
+                                    ),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -355,57 +385,38 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                         ),
                                       ],
                                     ),
-                                    /*Divider(
-                                      color: AppColors.LOGO_BACKGROUND_COLOR
-                                          .withOpacity(0.3),
-                                      thickness: 0.5,
-                                    ),
-                                    const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Product Quantity",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black),
-                                        ),
-                                        Text(
-                                          "2",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
                                     Divider(
                                       color: AppColors.LOGO_BACKGROUND_COLOR
                                           .withOpacity(0.3),
                                       thickness: 0.5,
                                     ),
-                                    const Row(
+                                    Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          "Product Quantity",
+                                        const Text(
+                                          "Payment Status",
                                           style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black),
                                         ),
                                         Text(
-                                          "2",
-                                          style: TextStyle(
+                                          controller.orders[0].paymentStatus!,
+                                          style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black),
                                         ),
                                       ],
-                                    ),*/
-                                    Gap(size.height * 0.02),
+                                    ),
+                                    // Divider(
+                                    //   color: AppColors.LOGO_BACKGROUND_COLOR
+                                    //       .withOpacity(0.3),
+                                    //   thickness: 0.5,
+                                    // ),
+
+                                    Gap(size.height * 0.03),
                                     AppWidgets.customButton(
                                       size: size,
                                       btnName:
@@ -422,7 +433,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

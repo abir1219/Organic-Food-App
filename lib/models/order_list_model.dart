@@ -11,7 +11,6 @@ class OrderHistoryModel {
       });
     }
   }
-
 }
 
 class OrderHistoryResult {
@@ -27,14 +26,14 @@ class OrderHistoryResult {
 
   OrderHistoryResult(
       {this.sId,
-        this.orderNumber,
-        this.totalAmount,
-        this.totalItems,
-        this.paymentType,
-        this.paymentStatus,
-        this.orderStatus,
-        this.address,
-        this.orderItems});
+      this.orderNumber,
+      this.totalAmount,
+      this.totalItems,
+      this.paymentType,
+      this.paymentStatus,
+      this.orderStatus,
+      this.address,
+      this.orderItems});
 
   OrderHistoryResult.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -45,7 +44,7 @@ class OrderHistoryResult {
     paymentStatus = json['paymentStatus'];
     orderStatus = json['orderStatus'];
     address =
-    json['address'] != null ? Address.fromJson(json['address']) : null;
+        json['address'] != null ? Address.fromJson(json['address']) : null;
     if (json['orderItems'] != null) {
       orderItems = <OrderItems>[];
       json['orderItems'].forEach((v) {
@@ -70,16 +69,16 @@ class Address {
 
   Address(
       {this.sId,
-        this.customerId,
-        this.city,
-        this.state,
-        this.address,
-        this.pincode,
-        this.lat,
-        this.lng,
-        this.createdAt,
-        this.updatedAt,
-        this.iV});
+      this.customerId,
+      this.city,
+      this.state,
+      this.address,
+      this.pincode,
+      this.lat,
+      this.lng,
+      this.createdAt,
+      this.updatedAt,
+      this.iV});
 
   Address.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -113,24 +112,26 @@ class OrderItems {
   int? iV;
   String? createdAt;
   String? updatedAt;
+  WarehouseDetails? warehouseDetails;
 
   OrderItems(
       {this.sId,
-        this.customerId,
-        this.orderId,
-        this.productId,
-        this.warehouseId,
-        this.productName,
-        this.productDescription,
-        this.imageUrl,
-        this.key,
-        this.value,
-        this.pricePerUnit,
-        this.quantity,
-        this.totalPrice,
-        this.iV,
-        this.createdAt,
-        this.updatedAt});
+      this.customerId,
+      this.orderId,
+      this.productId,
+      this.warehouseId,
+      this.productName,
+      this.productDescription,
+      this.imageUrl,
+      this.key,
+      this.value,
+      this.pricePerUnit,
+      this.quantity,
+      this.totalPrice,
+      this.iV,
+      this.createdAt,
+      this.updatedAt,
+      this.warehouseDetails});
 
   OrderItems.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -149,6 +150,49 @@ class OrderItems {
     iV = json['__v'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    warehouseDetails = json['warehouseDetails'] != null
+        ? WarehouseDetails.fromJson(json['warehouseDetails'])
+        : null;
   }
+}
 
+class WarehouseDetails {
+  String? sId;
+  String? name;
+  String? state;
+  String? city;
+  String? address;
+  String? pincode;
+  String? lat;
+  String? lng;
+  String? createdAt;
+  String? updatedAt;
+  int? iV;
+
+  WarehouseDetails(
+      {this.sId,
+      this.name,
+      this.state,
+      this.city,
+      this.address,
+      this.pincode,
+      this.lat,
+      this.lng,
+      this.createdAt,
+      this.updatedAt,
+      this.iV});
+
+  WarehouseDetails.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    name = json['name'];
+    state = json['state'];
+    city = json['city'];
+    address = json['address'];
+    pincode = json['pincode'];
+    lat = json['lat'];
+    lng = json['lng'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    iV = json['__v'];
+  }
 }

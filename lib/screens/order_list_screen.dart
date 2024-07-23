@@ -4,7 +4,6 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:organic_food_new/controllers/order_controller.dart';
-import 'package:organic_food_new/helper/api_end_points.dart';
 import 'package:organic_food_new/router/app_pages.dart';
 import 'package:organic_food_new/utils/app_colors.dart';
 import 'package:organic_food_new/widgets/my_custom_bottom_nav.dart';
@@ -197,7 +196,17 @@ class _OrderListScreenState extends State<OrderListScreen> {
                         fontSize: 12,
                         color: Colors.black),
                   ),
-                  //Gap(size.height * 0.005),
+                  Gap(size.height * 0.005),
+                  Text(
+                    "Store Location: ${controller.orders[index].orderItems![0].warehouseDetails!.city!}",
+                    //productName[index],
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                        color: Colors.black),
+                  ),
                   /*Text(
                     controller.orders[index].orderItems![0].value!,
                     // productVariant[index],
