@@ -1,5 +1,6 @@
 class ApiEndPoints {
   static const String BASE_LINK = "http://20.197.8.32/"; //prod
+  // static const String BASE_LINK = "http://192.168.1.254:5000/"; //local
 
   static _AuthEndPoints authEndpoints = _AuthEndPoints();
 }

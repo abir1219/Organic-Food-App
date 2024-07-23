@@ -5,8 +5,6 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:organic_food_new/controllers/products_controller.dart';
 import 'package:organic_food_new/screens/product_list.dart';
-import 'package:organic_food_new/utils/app_constants.dart';
-import 'package:organic_food_new/utils/sharedpreference_utils.dart';
 import 'package:organic_food_new/utils/utils.dart';
 
 import '../utils/app_colors.dart';
@@ -45,7 +43,7 @@ class _ProductPageState extends State<ProductPage> {
         DateTime now = DateTime.now();
         if (currentBackPressTime == null ||
             now.difference(currentBackPressTime!) >
-                Duration(seconds: 2)) {
+                const Duration(seconds: 2)) {
           currentBackPressTime = now;
           Utils.showToastMessage("Press back again to exit");
           // inAppReviewFunc();
@@ -97,7 +95,7 @@ class _ProductPageState extends State<ProductPage> {
                                     ),
                                     Expanded(
                                         child: Text(
-                                      "${controller.selectedLocationName.value}",
+                                      controller.selectedLocationName.value,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -216,7 +214,8 @@ class _ProductPageState extends State<ProductPage> {
                                     ),
                             ),
                             Obx(
-                              () => controller.isClicked.value &&
+                              () => controller.isClicked.value
+                                  &&
                                       controller.locationController.value.text
                                           .isNotEmpty &&
                                       controller.findLocationResults.isNotEmpty

@@ -106,14 +106,25 @@ class ProductsController extends GetxController {
       (value) {
         if (value[1] == 200) {
           productsModel.value = ProductsModel.fromJson(value[0]);
-          _products.assignAll(List<ProductResult>.generate(
-              productsModel.value.result!.length,
-              (index) => productsModel.value.result![index]));
+          // _products.assignAll(List<ProductResult>.generate(
+          //     productsModel.value.result!.length,
+          //     (index) => productsModel.value.result![index]));
 
-          quantity.assignAll(List<int>.generate(
-              productsModel.value.result!.length, (index) => 1));
-          isAddingCart.assignAll(List<bool>.generate(
-              productsModel.value.result!.length, (index) => false));
+          _products.assignAll(productsModel.value.result!
+              .where((product) => product.quantity! > 0)
+              .toList());
+
+          // quantity.assignAll(List<int>.generate(
+          //     productsModel.value.result!.length, (index) => 1));
+
+          quantity.assignAll(List<int>.generate(_products.length,
+                  (index) => 1));
+
+          // isAddingCart.assignAll(List<bool>.generate(
+          //     productsModel.value.result!.length, (index) => false));
+
+          isAddingCart.assignAll(List<bool>.generate(_products.length,
+                  (index) => false));
         }
         isLoading.value = false;
       },

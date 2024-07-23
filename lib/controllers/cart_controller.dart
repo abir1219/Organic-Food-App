@@ -126,6 +126,8 @@ class CartController extends GetxController {
       "addressId": addressId,
       "paymentType": paymentMode
     };
+
+    debugPrint("PAYMENT_BODY-->$body");
     _repo.placeOrder(body).then((value) {
       func(value);
       isOrdering.value = false;

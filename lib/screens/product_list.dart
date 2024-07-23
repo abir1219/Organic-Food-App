@@ -29,23 +29,29 @@ class ProductList extends StatelessWidget {
             child: LoadingAnimationWidget.staggeredDotsWave(
                 color: AppColors.LOGO_BACKGROUND_COLOR, size: size.width * 0.08),
                           )
-            : ListView.builder(
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  debugPrint("LENGTH-->${controller.products.length}");
-                  return Column(
-                    children: [
-                      _buildProductContainer(size, index),
-                      if (index != controller.products.length - 1)
-                        const Divider(
-                          color: Colors.grey,
-                          thickness: 1,
-                        )
-                    ],
-                  );
-                },
-                itemCount: controller.products.length//productImage.length,
-              ),
+            : NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (OverscrollIndicatorNotification notification) {
+            notification.disallowIndicator();
+            return false;
+          },
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    debugPrint("LENGTH-->${controller.products.length}");
+                    return Column(
+                      children: [
+                        _buildProductContainer(size, index),
+                        if (index != controller.products.length - 1)
+                          const Divider(
+                            color: Colors.grey,
+                            thickness: 1,
+                          )
+                      ],
+                    );
+                  },
+                  itemCount: controller.products.length//productImage.length,
+                ),
+            ),
       ),
     );
   }
