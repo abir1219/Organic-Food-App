@@ -13,6 +13,8 @@ class OrderController extends GetxController {
   RxList<OrderHistoryResult> get orders => _orders;
 
   RxBool isLoading = false.obs;
+  RxInt total = 0.obs;
+  RxList<int> totalList = <int>[].obs;
 
   Future<void> getOrderList() async {
     _orders.clear();
@@ -25,6 +27,22 @@ class OrderController extends GetxController {
           _orders.assignAll(List<OrderHistoryResult>.generate(
               orderListModel.value.result!.length,
               (index) => orderListModel.value.result![index]));
+
+          for (int i = 0; i < orderListModel.value.result!.length; i++) {
+            int totalPrice = 0;
+            // Loop through each order item in the current order
+            for (int j = 0;
+                j < orderListModel.value.result![i].orderItems!.length;
+                j++) {
+              // Add the totalPrice of the current order item to totalPrice
+              totalPrice +=
+                  orderListModel.value.result![i].orderItems![j].totalPrice!;
+              debugPrint("TOTAL--->$totalPrice");
+            }
+            debugPrint("\n");
+            // Add the current totalPrice to totalList
+            totalList.add(totalPrice);
+          }
         }
         isLoading.value = false;
       },
@@ -38,7 +56,6 @@ class OrderController extends GetxController {
   }
 
   RxBool isSingleOrderLoading = false.obs;
-  RxInt total = 0.obs;
 
   Future<void> getOrdersDetails(String orderId) async {
     isSingleOrderLoading.value = true;

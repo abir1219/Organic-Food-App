@@ -146,6 +146,12 @@ class _OrderListScreenState extends State<OrderListScreen> {
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
+            border: const Border(
+              left: BorderSide(
+                color: AppColors.LOGO_BACKGROUND_COLOR,
+                width: 4
+              )
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.3),
@@ -154,14 +160,14 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 blurRadius: 0.5,
               )
             ]),
-        height: size.height * 0.16,
+        // height: size.height * 0.16,
         margin: EdgeInsets.symmetric(
             horizontal: size.width * 0.02, vertical: size.height * 0.005),
         padding: EdgeInsets.symmetric(
-            horizontal: size.width * 0.02, vertical: size.height * 0.005),
+            horizontal: size.width * 0.02, vertical: size.height * 0.020),
         child: Row(
           children: [
-            Container(
+            /*Container(
               height: size.height * 0.16,
               width: size.width * 0.35,
               // color: Colors.green,
@@ -172,7 +178,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       image: NetworkImage(ApiEndPoints.BASE_LINK +
                           controller.orders[index].orderItems![0].imageUrl![0]),
                       fit: BoxFit.fill)),
-            ),
+            ),*/
             Expanded(
                 child: Padding(
               padding: EdgeInsets.symmetric(horizontal: size.width * 0.02),
@@ -182,17 +188,17 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    controller.orders[index].orderItems![0].productName!,
+                    "Order no: #${controller.orders[index].orderNumber!}",
                     //productName[index],
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.black),
                   ),
-                  Gap(size.height * 0.005),
-                  Text(
+                  //Gap(size.height * 0.005),
+                  /*Text(
                     controller.orders[index].orderItems![0].value!,
                     // productVariant[index],
                     style: const TextStyle(
@@ -210,16 +216,40 @@ class _OrderListScreenState extends State<OrderListScreen> {
                         fontWeight: FontWeight.w400,
                         fontSize: 12,
                         color: Colors.black),
+                  ),*/
+                  Gap(size.height * 0.005),
+                  Text(
+                    "Payment Mode: ${controller.orders[index].paymentType!}",
+                    //productName[index],
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        color: Colors.black),
                   ),
                   Gap(size.height * 0.005),
                   Text(
-                    "₹ ${controller.orders[index].orderItems![0].totalPrice!.toString()}",
+                    "Payment Status: ${controller.orders[index].paymentStatus!}",
+                    //productName[index],
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        color: Colors.black),
+                  ),
+                  Gap(size.height * 0.005),
+                  Text(
+                    "Total amount: ₹ ${controller.totalList[index]}",
+                    // "₹ ${controller.orders[index].orderItems![0].totalPrice!.toString()}",
                     //"₹${productPrice[index]}",
                     style: const TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 12,
+                        fontSize: 14,
                         color: AppColors.LOGO_BACKGROUND_COLOR),
                   ),
+                  Gap(size.height * 0.005),
                 ],
               ),
             ))

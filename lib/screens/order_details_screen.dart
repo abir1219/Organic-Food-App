@@ -234,12 +234,23 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                "${controller.orderListModel.value.result![0].orderItems![index].productName} (${controller.orderListModel.value.result![0].orderItems![index].value})",
-                                                style: const TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.black),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "${controller.orderListModel.value.result![0].orderItems![index].productName} (${controller.orderListModel.value.result![0].orderItems![index].value})",
+                                                    style: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Colors.black),
+                                                  ),
+                                                  Text(
+                                                    " X ${controller.orderListModel.value.result![0].orderItems![index].quantity}",
+                                                    style: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Colors.black),
+                                                  ),
+                                                ],
                                               ),
                                               Text(
                                                 "₹ ${controller.orderListModel.value.result![0].orderItems![index].totalPrice}",
